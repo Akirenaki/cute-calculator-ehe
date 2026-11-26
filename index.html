@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Calculator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;1,9..144,400&family=Karla:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <canvas class="constellation" id="constellation" aria-hidden="true"></canvas>
+  <main class="calc" aria-label="Scientific calculator">
+    <h1 class="logo"><span class="heart" aria-hidden="true"></span>calc<span class="heart" aria-hidden="true"></span></h1>
+
+    <section class="scientific-view" id="scientificView">
+      <section class="screen" aria-live="polite">
+        <div class="flags" aria-hidden="true">
+          <span id="flagAngle">DEG</span><span id="flagInv" hidden>INV</span>
+        </div>
+        <div class="expr"><span id="expr">&nbsp;</span></div>
+        <output class="value" id="value">0</output>
+      </section>
+
+      <p class="mood" id="mood">ready to slay &lt;3</p>
+
+      <div class="keys" id="keys">
+        <button class="k mode" data-act="deg" id="degKey">DEG</button>
+        <button class="k mode" data-act="inv" id="invKey" aria-pressed="false">INV</button>
+        <button class="k fn" data-act="ins" data-kind="open" data-ins="(">(</button>
+        <button class="k fn" data-act="ins" data-kind="close" data-ins=")">)</button>
+        <button class="k ctl" data-act="clear">AC</button>
+
+        <button class="k fn" data-act="ins" data-kind="fn" data-ins="sin(" data-inv-ins="asin(" data-lbl="sin" data-inv-lbl="asin">sin</button>
+        <button class="k fn" data-act="ins" data-kind="fn" data-ins="cos(" data-inv-ins="acos(" data-lbl="cos" data-inv-lbl="acos">cos</button>
+        <button class="k fn" data-act="ins" data-kind="fn" data-ins="tan(" data-inv-ins="atan(" data-lbl="tan" data-inv-lbl="atan">tan</button>
+        <button class="k fn" data-act="ins" data-kind="const" data-ins="π" aria-label="Pi">π</button>
+        <button class="k ctl" data-act="back" aria-label="Delete">DEL</button>
+
+        <button class="k fn" data-act="ins" data-kind="fn" data-ins="ln(" data-inv-ins="e^(" data-lbl="ln" data-inv-lbl="e^x">ln</button>
+        <button class="k fn" data-act="ins" data-kind="fn" data-ins="log(" data-inv-ins="10^(" data-lbl="log" data-inv-lbl="10^x">log</button>
+        <button class="k fn" data-act="ins" data-kind="fn" data-ins="sqrt(" data-inv-ins="cbrt(" data-lbl="sqrt" data-inv-lbl="cbrt">sqrt</button>
+        <button class="k fn" data-act="ins" data-kind="const" data-ins="e" aria-label="Euler's number">e</button>
+        <button class="k fn" data-act="ins" data-kind="const" data-ins="Ans">Ans</button>
+
+        <button class="k fn" data-act="ins" data-kind="post" data-ins="^2" aria-label="Square">x²</button>
+        <button class="k fn" data-act="ins" data-kind="op" data-ins="^" aria-label="Power">x^y</button>
+        <button class="k fn" data-act="ins" data-kind="post" data-ins="!" aria-label="Factorial">n!</button>
+        <button class="k fn" data-act="recip" aria-label="Reciprocal">1/x</button>
+        <button class="k op" data-act="ins" data-kind="op" data-ins="÷" aria-label="Divide">÷</button>
+
+        <button class="k" data-act="ins" data-kind="num" data-ins="7">7</button>
+        <button class="k" data-act="ins" data-kind="num" data-ins="8">8</button>
+        <button class="k" data-act="ins" data-kind="num" data-ins="9">9</button>
+        <button class="k fn" data-act="ins" data-kind="post" data-ins="%" aria-label="Percent">%</button>
+        <button class="k op" data-act="ins" data-kind="op" data-ins="×" aria-label="Multiply">×</button>
+
+        <button class="k" data-act="ins" data-kind="num" data-ins="4">4</button>
+        <button class="k" data-act="ins" data-kind="num" data-ins="5">5</button>
+        <button class="k" data-act="ins" data-kind="num" data-ins="6">6</button>
+        <button class="k fn" data-act="ins" data-kind="fn" data-ins="abs(">abs</button>
+        <button class="k op" data-act="ins" data-kind="op" data-ins="-" aria-label="Subtract">-</button>
+
+        <button class="k" data-act="ins" data-kind="num" data-ins="1">1</button>
+        <button class="k" data-act="ins" data-kind="num" data-ins="2">2</button>
+        <button class="k" data-act="ins" data-kind="num" data-ins="3">3</button>
+        <button class="k fn" data-act="ins" data-kind="op" data-ins="×10^" aria-label="Times ten to the power">EXP</button>
+        <button class="k op" data-act="ins" data-kind="op" data-ins="+" aria-label="Add">+</button>
+
+        <button class="k settings-trigger" data-act="settings" aria-label="Settings" title="Settings">⚙</button>
+        <button class="k" data-act="ins" data-kind="num" data-ins="0">0</button>
+        <button class="k" data-act="decimal" aria-label="Decimal point">.</button>
+        <button class="k fn" data-act="ins" data-kind="neg" data-ins="-" aria-label="Negative sign">(-)</button>
+        <button class="k eq" data-act="equals" aria-label="Equals">=</button>
+      </div>
+
+      <details class="tape">
+        <summary>STICKER TAPE</summary>
+        <ol id="history"><li class="empty">nothing yet :3</li></ol>
+      </details>
+    </section>
+
+    <section class="graph-view" id="graphView" aria-label="2D graphing calculator" hidden>
+      <header class="graph-heading">
+        <div>
+          <h2>Graphing calculator</h2>
+          <p>Plot functions of x</p>
+        </div>
+        <div class="graph-actions">
+          <button class="graph-settings" id="graphSettings" type="button">Settings</button>
+          <button class="graph-reset" id="resetGraph" type="button">Reset view</button>
+        </div>
+      </header>
+      <div class="graph-layout">
+        <div class="graph-sidebar">
+          <div class="expression-list" id="expressionList"></div>
+          <button class="add-function" id="addFunction" type="button">+ Add function</button>
+          <p class="graph-help">Use x, numbers, + − × ÷, powers, and functions such as sin(x), sqrt(x), or ln(x).</p>
+        </div>
+        <div class="plot-wrap">
+          <canvas class="graph-canvas" id="graphCanvas" tabindex="0" role="img" aria-label="Function graph. Drag to pan and use the scroll wheel to zoom."></canvas>
+          <p class="graph-hint">Drag to pan · scroll to zoom</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="distribution-view" id="distributionView" aria-label="Probability distribution explorer" hidden>
+      <header class="graph-heading">
+        <div>
+          <h2>Distribution explorer</h2>
+          <p>Explore probability distributions</p>
+        </div>
+        <button class="graph-settings" id="distributionSettings" type="button">Settings</button>
+      </header>
+      <div class="distribution-layout">
+        <aside class="distribution-sidebar">
+          <label class="setting-field" for="distributionSelect">
+            <span>Distribution</span>
+            <select id="distributionSelect">
+              <option value="normal">Normal</option>
+              <option value="binomial">Binomial</option>
+              <option value="poisson">Poisson</option>
+            </select>
+          </label>
+          <div class="distribution-parameters" id="distributionParameters"></div>
+          <p class="distribution-error" id="distributionError" role="status" hidden></p>
+          <dl class="distribution-stats">
+            <div><dt>Expected value</dt><dd id="distributionMean">0</dd></div>
+            <div><dt>Variance</dt><dd id="distributionVariance">0</dd></div>
+          </dl>
+        </aside>
+        <div class="plot-wrap">
+          <canvas class="distribution-canvas" id="distributionCanvas" tabindex="0" role="img" aria-label="Probability density graph"></canvas>
+          <p class="graph-hint" id="distributionHint">Probability density · x is the measured value</p>
+        </div>
+      </div>
+    </section>
+
+    <dialog class="settings-dialog" id="settingsDialog" aria-labelledby="settingsTitle">
+      <div class="settings-content">
+        <header class="settings-heading">
+          <h2 id="settingsTitle">Settings</h2>
+          <button class="settings-close" id="closeSettings" type="button" aria-label="Close settings">×</button>
+        </header>
+        <label class="setting-field" for="modeSelect">
+          <span>Mode</span>
+          <select id="modeSelect">
+            <option value="scientific">Scientific calculator</option>
+            <option value="graphing">2D graphing calculator</option>
+            <option value="distribution">Distribution graph</option>
+          </select>
+        </label>
+        <label class="setting-toggle" for="stellarToggle">
+          <span>Stellar field</span>
+          <input id="stellarToggle" type="checkbox" checked>
+        </label>
+        <footer class="settings-footer">
+          More from <a href="https://akirenaki.github.io/" target="_blank" rel="noreferrer">akirenaki.github.io</a>
+        </footer>
+      </div>
+    </dialog>
+  </main>
+
+  <div class="sparkles" id="sparkles" aria-hidden="true"></div>
+  <script src="app.js"></script>
+</body>
+</html>
